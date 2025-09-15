@@ -1,0 +1,41 @@
+server:
+  port: 9091
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: student-service
+          uri: lb://student-service
+          predicates:
+            - Path=/student/**
+        - id: teacher-service
+          uri: lb://teacher-service
+          predicates:
+            - Path=/teacher/**
+        - id: spring-security
+          uri: lb://spring-security
+          predicates:
+            - Path=/auth/**
+
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+
+jwt:
+  secret-key: "BmoD/XUVKSxA5z2JNhrdiDl/1tF6N5QpLWPgVmO0RAE="
+gateway:
+  header: "asdf;lkj"
+

@@ -83,7 +83,6 @@ public class AuthController {
     }
 
 
-
     @GetMapping("/validate")
     public boolean validateToken(@RequestHeader("token") String token){
 
