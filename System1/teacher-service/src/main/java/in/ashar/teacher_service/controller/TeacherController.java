@@ -1,8 +1,12 @@
 package in.ashar.teacher_service.controller;
 
+import in.ashar.teacher_service.DTO.StudentDto;
+import in.ashar.teacher_service.DTO.TeacherDto;
 import in.ashar.teacher_service.entity.Teacher;
+import in.ashar.teacher_service.feignClient.StudentFeignClient;
 import in.ashar.teacher_service.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,25 +18,27 @@ public class TeacherController {
 
     @Autowired
     private TeacherService teacherService;
+    @Autowired
+    private StudentFeignClient feignClient;
 
     @PostMapping
-    public ResponseEntity<Teacher> create(@RequestBody Teacher teacher) {
-        return ResponseEntity.ok(teacherService.createTeacher(teacher));
+    public ResponseEntity<TeacherDto> create(@RequestBody TeacherDto teacherDto) {
+        return ResponseEntity.ok(teacherService.createTeacher(teacherDto));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Teacher> getById(@PathVariable int id) {
+    public ResponseEntity<TeacherDto> getById(@PathVariable int id) {
         return ResponseEntity.ok(teacherService.getTeacherById(id));
     }
 
     @GetMapping
-    public ResponseEntity<List<Teacher>> getAll() {
+    public ResponseEntity<List<TeacherDto>> getAll() {
         return ResponseEntity.ok(teacherService.getAllTeachers());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Teacher> update(@PathVariable int id, @RequestBody Teacher teacher) {
-        return ResponseEntity.ok(teacherService.updateTeacher(id, teacher));
+    public ResponseEntity<TeacherDto> update(@PathVariable int id, @RequestBody TeacherDto teacherDto) {
+        return ResponseEntity.ok(teacherService.updateTeacher(id, teacherDto));
     }
 
     @DeleteMapping("/{id}")
@@ -41,8 +47,16 @@ public class TeacherController {
         return ResponseEntity.noContent().build();
     }
 
-    /// ///////////////////////// Calling External Services //////////////////////////////////
+    /// ///////////////////////// Student Apis //////////////////////////////////
 
+    @GetMapping("/student/{id}")
+    public ResponseEntity<StudentDto> getStudentById(@PathVariable int id) {
+        return feignClient.getStudentById(id);
+    }
 
+    @GetMapping("/student")
+    public ResponseEntity<List<StudentDto>> getAllStudents() {
+        return feignClient.getAllStudents();
+    }
 
 }

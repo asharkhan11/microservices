@@ -1,5 +1,7 @@
 package in.ashar.student_service.service;
 
+import feign.FeignException;
+import in.ashar.student_service.DTO.StudentDto;
 import in.ashar.student_service.entity.Student;
 import in.ashar.student_service.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,24 +15,35 @@ public class StudentService {
     @Autowired
     private StudentRepository studentRepository;
 
-    public Student createStudent(Student student) {
-        return studentRepository.save(student);
+    public StudentDto createStudent(StudentDto studentDto) {
+        studentRepository.save(Student.builder().studentName(studentDto.getStudentName()).build());
+        return studentDto;
     }
 
-    public Student getStudentById(int id) {
-        return studentRepository.findById(id)
+    public StudentDto getStudentById(int id) {
+        Student student= studentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Student not found with id: " + id));
+        return new StudentDto(student.getStudentName());
     }
 
-    public List<Student> getAllStudents() {
-        return studentRepository.findAll();
+    public List<StudentDto> getAllStudents() {
+        List<Student> students = studentRepository.findAll();
+
+        return students.stream().map(s -> new StudentDto(s.getStudentName())).toList();
     }
 
-    public Student updateStudent(int id, Student student) {
+    public StudentDto updateStudent(int id, StudentDto studentDto) {
+
         Student existing = studentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Student not found with id: " + id));
-        // TODO: set fields from student to existing if partial update is needed
-        return studentRepository.save(student);
+
+        if(studentDto.getStudentName() != null && !studentDto.getStudentName().isBlank()){
+            existing.setStudentName(studentDto.getStudentName());
+        }
+
+        studentRepository.save(existing);
+
+        return studentDto;
     }
 
     public void deleteStudent(int id) {

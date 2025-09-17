@@ -1,5 +1,4 @@
-package in.ashar.teacher_service.DTO;
-
+package in.ashar.spring_security.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,9 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Student {
+public class RoleDto {
 
-    private String studentName;
-    private String createdBy;
-
+    private String roleName;
 }
